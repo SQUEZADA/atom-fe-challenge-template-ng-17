@@ -1,13 +1,20 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Observable, BehaviorSubject, of } from "rxjs";
 import { tap, catchError } from "rxjs/operators";
 import { environment } from "../../environments/environment";
 
-interface UserCheckResponse {
+export interface UserCheckResponse {
     exists: boolean;
-    user?: { email: string }; 
+    user?: { email: string };
     message?: string;
+}
+
+export interface UserCreateResponse {
+    success: boolean;
+    message: string;
+    statusCode?: number;
+    user?: { email: string };
 }
 
 @Injectable({
@@ -25,40 +32,59 @@ export class AuthService {
     }
 
     checkUserExists(email: string): Observable<UserCheckResponse> {
-        return this.http.get<UserCheckResponse>(`<span class="math-inline">\{this\.apiUrl\}/users/</span>{email}`).pipe(
+        console.log(`AuthService: Checking user existence for ${email}`);
+        return this.http.get<UserCheckResponse>(`${this.apiUrl}/users/${email}`).pipe(
             tap(response => {
+                console.log("AuthService: User check response:", response);
                 if (response.exists) {
                     localStorage.setItem("currentUserEmail", email);
                     this.currentUserEmailSubject.next(email);
                 }
             }),
-            catchError(error => {
+            catchError((error: HttpErrorResponse) => {
+                console.error("AuthService: Error checking user:", error);
                 if (error.status === 404) {
-                    return of({ exists: false, message: "User not found on server." });
+                    return of({ exists: false, message: "User not found on server (404)." });
                 }
-                return of({ exists: false, message: "An unexpected error occurred." });
+                return of({ 
+                    exists: false, 
+                    message: `An unexpected error occurred: ${error.message || "Unknown error"}` 
+                });
             })
         );
     }
 
-    createUser(email: string): Observable<any> {
+    createUser(email: string): Observable<UserCreateResponse> {
+        console.log(`AuthService: Creating user ${email}`);
         return this.http.post<any>(`${this.apiUrl}/users`, { email }).pipe(
             tap(response => {
+                console.log("AuthService: User created response (201 OK):", response);
+                // Si llegamos aquí, la creación fue exitosa (201 OK)
                 localStorage.setItem("currentUserEmail", email);
                 this.currentUserEmailSubject.next(email);
-                console.log("User created:", response);
             }),
-            catchError(error => {
-                console.error("Error creating user:", error);
-                return of({ success: false, message: "Error creating user", error: error.message });
+            catchError((error: HttpErrorResponse) => { // Especifica HttpErrorResponse
+                console.error("AuthService: Error creating user:", error);
+                if (error.status === 409) {
+                    // El usuario ya existe, devuelve una respuesta específica para que el componente la maneje
+                    return of({ success: false, message: "El usuario ya existe.", statusCode: 409 });
+                }
+                // Para otros errores, devuelve un objeto con éxito: false y un mensaje de error.
+                return of({ 
+                    success: false,
+                    message: `Error al crear usuario: ${error.message || "Error desconocido"}`,
+                    statusCode: error.status
+                });
             })
         );
     }
+
     getCurrentUserEmail(): string | null {
         return this.currentUserEmailSubject.value;
     }
 
     logout(): void {
+        console.log("AuthService: Logging out user");
         localStorage.removeItem("currentUserEmail");
         this.currentUserEmailSubject.next(null);
     }

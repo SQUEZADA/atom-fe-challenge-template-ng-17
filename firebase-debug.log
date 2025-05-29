@@ -1,0 +1,41 @@
+[debug] [2025-05-29T18:49:31.531Z] ----------------------------------------------------------------------
+[debug] [2025-05-29T18:49:31.533Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2025-05-29T18:49:31.533Z] CLI Version:   14.4.0
+[debug] [2025-05-29T18:49:31.533Z] Platform:      win32
+[debug] [2025-05-29T18:49:31.533Z] Node Version:  v22.16.0
+[debug] [2025-05-29T18:49:31.534Z] Time:          Thu May 29 2025 14:49:31 GMT-0400 (Atlantic Standard Time)
+[debug] [2025-05-29T18:49:31.534Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-29T18:49:31.536Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-29T18:49:31.537Z] > authorizing via signed-in user (serviotquezada@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\servio.quezada\atom-fe-challenge-template-ng-17
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2025-05-29T18:50:01.618Z] Checked if tokens are valid: true, expires at: 1748548146352
+[debug] [2025-05-29T18:50:01.618Z] Checked if tokens are valid: true, expires at: 1748548146352
+[debug] [2025-05-29T18:50:01.619Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2025-05-29T18:50:01.619Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"frontend","name":"frontend"}
+[debug] [2025-05-29T18:50:01.929Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 409
+[debug] [2025-05-29T18:50:01.930Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"error":{"code":409,"message":"Requested entity already exists","status":"ALREADY_EXISTS"}}
+[debug] [2025-05-29T18:50:02.040Z] FirebaseError: Request to https://cloudresourcemanager.googleapis.com/v1/projects had HTTP Error: 409, Requested entity already exists
+    at responseToError (C:\Users\servio.quezada\AppData\Roaming\nvm\v22.16.0\node_modules\firebase-tools\lib\responseToError.js:52:12)
+    at RetryOperation._fn (C:\Users\servio.quezada\AppData\Roaming\nvm\v22.16.0\node_modules\firebase-tools\lib\apiv2.js:312:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to create project because there is already a project with ID frontend. Please try again with a unique project ID.
